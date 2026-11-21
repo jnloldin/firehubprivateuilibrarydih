@@ -3548,30 +3548,64 @@ t7.CreateWindow = function(p53, p54)
 		table.insert(t8, TextBox:GetPropertyChangedSignal("Text"):Connect(v411))
 		u404 = false
 
-		local TextButton4 = v35("TextButton", {
-			Size = UDim2.fromOffset(58, 58),
-			Position = UDim2.fromOffset(12, 12),
-			BackgroundColor3 = Color3.fromRGB(10, 6, 18),
-			BorderSizePixel = 0,
-			Text = "",
-			Visible = false,
-			ZIndex = 10,
-		}, ScreenGui)
+			local TextButton4 = v35("TextButton", {
+				Size = UDim2.fromOffset(224, 56),
+				Position = UDim2.fromOffset(12, 12),
+				BackgroundColor3 = Color3.fromRGB(17, 19, 25),
+				BackgroundTransparency = 0.06,
+				BorderSizePixel = 0,
+				Text = "",
+				Visible = false,
+				ZIndex = 10,
+			}, ScreenGui)
 
-		v40(TextButton4, 14)
-
-		local v429 = v41(TextButton4, t3.accent, 0, 2.5)
-
-		v40(
-			v35("ImageLabel", {
-				Size = UDim2.new(1, 0, 1, 0),
-				BackgroundTransparency = 1,
-				Image = v98.Logo or "rbxthumb://type=Asset&id=90690292624964&w=420&h=420",
+			v40(TextButton4, 18)
+			local v429 = v41(TextButton4, t3.accent, 0.65, 1)
+			local MinimizedAvatar = v35("ImageLabel", {
+				Size = UDim2.fromOffset(38, 38),
+				Position = UDim2.fromOffset(9, 9),
+				BackgroundColor3 = Color3.fromRGB(30, 34, 42),
+				BorderSizePixel = 0,
+				Image = "rbxthumb://type=Asset&id=124977282380393&w=150&h=150",
 				ScaleType = Enum.ScaleType.Crop,
 				ZIndex = 11,
-			}, TextButton4),
-			14
-		)
+			}, TextButton4)
+			v40(MinimizedAvatar, 19)
+			v35("TextLabel", {
+				Size = UDim2.new(1, -106, 1, 0),
+				Position = UDim2.fromOffset(57, 0),
+				BackgroundTransparency = 1,
+				Font = Enum.Font.BuilderSansBold,
+				TextSize = 14,
+				TextColor3 = Color3.fromRGB(238, 240, 245),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				Text = "Mozil Hub",
+				ZIndex = 11,
+			}, TextButton4)
+			local VisualizerBars = {}
+			for i = 1, 4 do
+				VisualizerBars[i] = v35("Frame", {
+					Size = UDim2.fromOffset(3, 7),
+					AnchorPoint = Vector2.new(0.5, 0.5),
+					Position = UDim2.new(1, -48 + (i - 1) * 6, 0.5, 0),
+					BackgroundColor3 = Color3.fromRGB(190, 204, 223),
+					BorderSizePixel = 0,
+					ZIndex = 11,
+				}, TextButton4)
+			end
+			task.spawn(function()
+				local phase = 0
+				while TextButton4.Parent do
+					phase += 0.22
+					for i, bar in ipairs(VisualizerBars) do
+						if bar.Parent then
+							local height = 4 + (math.sin(phase + i * 1.25) + 1) * 7
+							v47(bar, 0.12, { Size = UDim2.fromOffset(3, height) }, Enum.EasingStyle.Sine)
+						end
+					end
+					task.wait(0.12)
+				end
+			end)
 		v109(function()
 			v429.Color = t3.accent
 		end)
