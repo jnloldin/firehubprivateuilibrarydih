@@ -1,3 +1,13 @@
+-- Cloudflare Worker dependency gate. Replace the placeholder host below with the deployed Worker URL.
+local __MOZIL_GATE_URL = "https://firehub.firerealms0.workers.dev/mozil-ui-check-v1"
+local __MOZIL_GATE_EXPECTED = "MOZIL_UI_GATE_OK_V1_7D91C4"
+local __mozil_gate_ok, __mozil_gate_result = pcall(function()
+	return game:HttpGet(__MOZIL_GATE_URL, true)
+end)
+if not __mozil_gate_ok or __mozil_gate_result ~= __MOZIL_GATE_EXPECTED then
+	error("FIRE UI Cloudflare dependency check failed", 0)
+end
+
 -- FIRE HUB UI library
 
 local function geniter(f, s, c)
