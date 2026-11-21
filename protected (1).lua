@@ -126,11 +126,17 @@ local t1 = {
 	wrench = "rbxassetid://7743878358",
 	crosshair2 = "rbxassetid://7733765307",
 	sun = "rbxassetid://7734068495",
-	pencil = "rbxassetid://7734022107",
-	trash = "rbxassetid://6031763426",
-}
+		pencil = "rbxassetid://7734022107",
+		trash = "rbxassetid://6031763426",
+	}
+	local t1Glyphs = {
+		fish = "🐟",
+		shark = "🦈",
+		position = "📍",
+		volcano = "🌋",
+	}
 
-local function v29(p5, p6)
+	local function v29(p5, p6)
 	if p5 == nil or p5 == "" then
 		return p6
 	end
@@ -2162,31 +2168,36 @@ t7.CreateWindow = function(p53, p54)
 		}, Frame24)
 		v40(tabJumpButton, 8)
 		v41(tabJumpButton, t3.accent, 0.45, 1)
-		local tabJumpTween
-		local function getTabScrollBottom()
-			return math.max(0, ScrollingFrame.AbsoluteCanvasSize.Y - ScrollingFrame.AbsoluteSize.Y)
-		end
-		local function updateTabJumpButton()
-			local bottom = getTabScrollBottom()
-			local atBottom = bottom > 0 and ScrollingFrame.CanvasPosition.Y >= bottom - 2
-			tabJumpButton.Visible = bottom > 0
-			if atBottom then
-				tabJumpButton.Text = "▲"
-				tabJumpButton.AnchorPoint = Vector2.new(0.5, 0)
-				tabJumpButton.Position = UDim2.new(0.5, 0, 0, 2)
-				tabJumpButton:SetAttribute("Direction", "Up")
-			else
-				tabJumpButton.Text = "▼"
-				tabJumpButton.AnchorPoint = Vector2.new(0.5, 1)
-				tabJumpButton.Position = UDim2.new(0.5, 0, 1, -2)
-				tabJumpButton:SetAttribute("Direction", "Down")
+			local tabJumpTween
+			local function getTabScrollBottom()
+				return math.max(0, ScrollingFrame.AbsoluteCanvasSize.Y - ScrollingFrame.AbsoluteSize.Y)
 			end
-		end
-		table.insert(t8, tabJumpButton.MouseButton1Click:Connect(function()
-			local bottom = getTabScrollBottom()
-			if bottom <= 0 then return end
-			local atBottom = ScrollingFrame.CanvasPosition.Y >= bottom - 2
-			local targetY = atBottom and 0 or bottom
+			local function isNearTabScrollBottom(bottom)
+				local edgeThreshold = math.max(12, math.min(36, ScrollingFrame.AbsoluteSize.Y * 0.12))
+				local scrollY = ScrollingFrame.CanvasPosition.Y
+				return bottom > 0 and scrollY > 2 and scrollY >= bottom - edgeThreshold
+			end
+			local function updateTabJumpButton()
+				local bottom = getTabScrollBottom()
+				local nearBottom = isNearTabScrollBottom(bottom)
+				tabJumpButton.Visible = bottom > 0
+				if nearBottom then
+					tabJumpButton.Text = "▲"
+					tabJumpButton.AnchorPoint = Vector2.new(0.5, 0)
+					tabJumpButton.Position = UDim2.new(0.5, 0, 0, 2)
+					tabJumpButton:SetAttribute("Direction", "Up")
+				else
+					tabJumpButton.Text = "▼"
+					tabJumpButton.AnchorPoint = Vector2.new(0.5, 1)
+					tabJumpButton.Position = UDim2.new(0.5, 0, 1, -2)
+					tabJumpButton:SetAttribute("Direction", "Down")
+				end
+			end
+			table.insert(t8, tabJumpButton.MouseButton1Click:Connect(function()
+				local bottom = getTabScrollBottom()
+				if bottom <= 0 then return end
+				local nearBottom = isNearTabScrollBottom(bottom)
+				local targetY = nearBottom and 0 or bottom
 			if tabJumpTween then pcall(function() tabJumpTween:Cancel() end) end
 			tabJumpTween = v47(ScrollingFrame, 1.5, {
 				CanvasPosition = Vector2.new(0, targetY),
@@ -4226,7 +4237,9 @@ t7.CreateWindow = function(p53, p54)
 			v51(TextButton5, 11)
 			v58(TextButton5, 0.9)
 
-			local Icon = v504.Icon and v29(v504.Icon) or nil
+				local iconKey = string.lower(tostring(v504.Icon or ""))
+				local IconGlyph = t1Glyphs[iconKey]
+				local Icon = not IconGlyph and v504.Icon and v29(v504.Icon) or nil
 
 			if Icon then
 				t28._iconImg = v35("ImageLabel", {
@@ -4250,7 +4263,7 @@ t7.CreateWindow = function(p53, p54)
 					Font = Enum.Font.BuilderSansBold,
 					TextSize = 15,
 					TextColor3 = t3.dim,
-					Text = string.upper(string.sub(v504.Title or "?", 1, 1)),
+					Text = IconGlyph or string.upper(string.sub(v504.Title or "?", 1, 1)),
 					ZIndex = 4,
 				}, TextButton5)
 			end
